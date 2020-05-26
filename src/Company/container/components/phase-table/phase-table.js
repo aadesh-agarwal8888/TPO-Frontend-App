@@ -31,12 +31,6 @@ const CustomTable = (props) => {
 					onRowAdd: (newData) =>
 						new Promise((resolve) => {
 							setTimeout(() => {
-								resolve();
-								/*setState((prevState) => {
-									const data = [...prevState.data];
-									data.push(newData);
-									return { ...prevState, data };
-								});*/
 								addPhase(newData);
 							}, 600);
 						}),

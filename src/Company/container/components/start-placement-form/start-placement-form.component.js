@@ -5,13 +5,15 @@ import { TextField, FormGroup, Button } from '@material-ui/core';
 import CheckBoxComponent from '../check-box/check-box.component';
 import CustomTable from '../phase-table/phase-table';
 
-import CATEGORY from './category';
+//REDUX
+
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { selectPhaseCategory } from '../../../redux/phase-details/phase-details.selectors';
+
+//REDUX
 
 function StartPlacementForm(props) {
-	const [state] = React.useState({
-		category: CATEGORY,
-	});
-
 	const componentStyle = {
 		display: 'flex',
 		flexDirection: 'row',
@@ -30,7 +32,7 @@ function StartPlacementForm(props) {
 						<Typography variant="h5" style={labelStyle}>
 							Domain:
 						</Typography>
-						<CheckBoxComponent category={state.category} />
+						<CheckBoxComponent />
 					</div>
 					<div style={componentStyle}>
 						<Typography variant="h5" style={labelStyle}>
@@ -66,4 +68,8 @@ function StartPlacementForm(props) {
 	);
 }
 
-export default StartPlacementForm;
+/*const mapStateToProps = createStructuredSelector({
+	domain_category: selectPhaseCategory,
+})*/
+
+export default connect()(StartPlacementForm);

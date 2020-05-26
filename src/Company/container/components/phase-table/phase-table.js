@@ -3,48 +3,60 @@ import MaterialTable from 'material-table';
 
 import PhaseDetails from './phase-details';
 
-const CustomTable = () => {
-	const [state, setState] = React.useState(PhaseDetails);
+//REDUX
+
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { selectPhaseTableDetails } from '../../../redux/phase-details/phase-details.selectors';
+import {
+	addPhaseInPhaseTable,
+	updatePhaseInPhaseTable,
+	removePhaseFromPhaseTable,
+} from '../../../redux/phase-details/phase-details.actions';
+
+//REDUX
+
+const CustomTable = (props) => {
+	const { phaseTableDetails, addPhase, updatePhase, removePhase } = props;
+
+	const [state, setState] = React.useState(phaseTableDetails);
 
 	return (
 		<div>
 			<MaterialTable
 				title="Phase Details"
-				columns={state.columns}
-				data={state.data}
+				columns={phaseTableDetails.columns}
+				data={phaseTableDetails.data}
 				editable={{
 					onRowAdd: (newData) =>
 						new Promise((resolve) => {
 							setTimeout(() => {
 								resolve();
-								setState((prevState) => {
+								/*setState((prevState) => {
 									const data = [...prevState.data];
 									data.push(newData);
 									return { ...prevState, data };
-								});
-								console.log(state);
+								});*/
+								addPhase(newData);
 							}, 600);
 						}),
 					onRowUpdate: (newData, oldData) =>
 						new Promise((resolve) => {
 							resolve();
 							if (oldData) {
-								setState((prevState) => {
-									const data = [...prevState.data];
-									data[data.indexOf(oldData)] = newData;
-									return { ...prevState, data };
-								});
+								updatePhase(oldData, newData);
 							}
 						}),
 					onRowDelete: (oldData) =>
 						new Promise((resolve) => {
 							setTimeout(() => {
 								resolve();
-								setState((prevState) => {
+								/*setState((prevState) => {
 									const data = [...prevState.data];
 									data.splice(data.indexOf(oldData), 1);
 									return { ...prevState, data };
-								});
+								});*/
+								removePhase(oldData);
 							}, 600);
 						}),
 				}}
@@ -53,4 +65,14 @@ const CustomTable = () => {
 	);
 };
 
-export default CustomTable;
+const mapStateToProps = createStructuredSelector({
+	phaseTableDetails: selectPhaseTableDetails,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+	addPhase: (phase) => dispatch(addPhaseInPhaseTable(phase)),
+	updatePhase: (oldData, newData) => dispatch(updatePhaseInPhaseTable({ oldData, newData })),
+	removePhase: (phase) => dispatch(removePhaseFromPhaseTable(phase)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(CustomTable);

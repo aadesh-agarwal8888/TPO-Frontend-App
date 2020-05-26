@@ -1,12 +1,22 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { Paper, Button } from '@material-ui/core';
+import { Paper, Button, TextField } from '@material-ui/core';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import CustomSelect from './components/select-component/select.component';
 import DateFnsUtils from '@date-io/date-fns';
 
-import PhaseDetails from './components/phase-table/phase-details';
+//REDUX
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { selectPhaseTableDetails } from '../redux/phase-details/phase-details.selectors';
+import {
+	selectSelectedPhase,
+	selectSelectedPhaseDescription,
+	selectDate,
+} from '../redux/request-date/request-date.selectors';
+import { setDate } from '../redux/request-date/request-date.actions';
+//REDUX
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -22,50 +32,68 @@ const useStyles = makeStyles((theme) => ({
 		flexGrow: 1,
 		padding: theme.spacing(3),
 	},
-	formControl: {
-		margin: theme.spacing(1),
-		minWidth: 120,
-	},
-	selectEmpty: {
-		marginTop: theme.spacing(2),
-	},
 }));
 
 function RequestDate(props) {
-	const { container } = props;
+	const { selected_phase, selected_phase_description, set_date, selected_date } = props;
 	const classes = useStyles();
 
-	const [state, setState] = React.useState({ ...PhaseDetails, selected_date: new Date('2020-05-23T21:11:54') });
-
-	const handleDateChange = (date) => {
-		setState({ ...state, selected_date: date });
+	const componentStyle = {
+		display: 'flex',
+		flexDirection: 'row',
+		justifyContent: 'flex-start',
+		margin: '20px',
+	};
+	const labelStyle = {
+		width: '30%',
+	};
+	const buttonStyle = {
+		display: 'flex',
+		justifyContent: 'space-around',
+		padding: '10px',
 	};
 
 	return (
 		<React.Fragment>
 			<Paper>
 				<Typography variant="h3">RequestDate</Typography>
-				<div>
-					<Typography variant="h5">Select Phase:</Typography>
-					<CustomSelect selected_phase={state.selected_phase} />
+				<div style={componentStyle}>
+					<Typography variant="h5" style={labelStyle}>
+						Select Phase:
+					</Typography>
+					<CustomSelect />
 				</div>
-				<div>
-					<Typography variant="h5">Date:</Typography>
+				<div style={componentStyle}>
+					<Typography variant="h5" style={labelStyle}>
+						Phase Description:
+					</Typography>
+					<TextField
+						id="phase-description"
+						multiline
+						rows={2}
+						variant="outlined"
+						defaultValue={selected_phase_description}
+					/>
+				</div>
+				<div style={componentStyle}>
+					<Typography variant="h5" style={labelStyle}>
+						Date:
+					</Typography>
 					<MuiPickersUtilsProvider utils={DateFnsUtils}>
 						<KeyboardDatePicker
 							margin="normal"
 							id="date-picker-dialog"
 							label="Date picker dialog"
-							format="MM/dd/yyyy"
-							value={state.selected_date}
-							onChange={handleDateChange}
+							format="dd/MM/yyyy"
+							value={selected_date}
+							onChange={(selectedDate) => set_date(selectedDate)}
 							KeyboardButtonProps={{
 								'aria-label': 'change date',
 							}}
 						/>
 					</MuiPickersUtilsProvider>
 				</div>
-				<div>
+				<div style={buttonStyle}>
 					<Button variant="contained" color="primary" onClick={() => alert('Date Requested')}>
 						Request Date
 					</Button>
@@ -75,4 +103,15 @@ function RequestDate(props) {
 	);
 }
 
-export default RequestDate;
+const mapStateToProps = createStructuredSelector({
+	phase_details: selectPhaseTableDetails,
+	selected_phase: selectSelectedPhase,
+	selected_phase_description: selectSelectedPhaseDescription,
+	selected_date: selectDate,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+	set_date: (selectedDate) => dispatch(setDate(selectedDate)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RequestDate);

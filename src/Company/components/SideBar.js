@@ -1,18 +1,16 @@
 import React, { Fragment } from 'react';
-import { Divider, List, ListItem, ListItemIcon, ListItemText, Collapse, Typography } from '@material-ui/core';
-import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
+import { Divider, List, ListItem, ListItemIcon, ListItemText, Collapse, Typography, MenuItem } from '@material-ui/core';
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
 import HomeIcon from '@material-ui/icons/Home';
-import GroupAddIcon from '@material-ui/icons/GroupAdd';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import EventIcon from '@material-ui/icons/Event';
-import DetailIcon from '@material-ui/icons/Details';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import LocalPostOfficeIcon from '@material-ui/icons/LocalPostOffice';
-import PostAddIcon from '@material-ui/icons/PostAdd';
-import BusinessIcon from '@material-ui/icons/Business';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
+
+//Redux
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { setOpen } from '../redux/sidebar/sidebar.actions';
+import { selectSidebar, selectMenuItems } from '../redux/sidebar/sidebar.selectors';
+//Redux
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -33,16 +31,18 @@ const useStyles = makeStyles((theme) => ({
  * @param {*} props
  */
 function SideBar(props) {
-	const { container } = props;
+	const { container, sidebar, setOpen, menuItems } = props;
 	const classes = useStyles();
 	const theme = useTheme();
 
-	const [open, setOpen] = React.useState({ Home: true, College: false, Company: false, Student: false });
+	/*const [open, setOpen] = React.useState({ Home: true, College: false, Company: false, Student: false });
+
+
 
 	const handleClick = (event, selected) => {
 		var temp = !open[selected];
 		setOpen({ ...open, [selected]: temp });
-	};
+	};*/
 	/**
 	 * Menu item object format
 	 * @typedef {object}
@@ -57,27 +57,7 @@ function SideBar(props) {
 	 * list of objects of Menu items
 	 * @type {Array.<Menus>}
 	 */
-	const menuItems = [
-		{
-			title: 'Placement',
-			titleIcon: <GroupAddIcon />,
-			Sublist: [
-				'Start Placement Drive',
-				'Request Phase Date',
-				'Current Placement Details',
-				'View Placements Held',
-			],
-			SublistIcon: [<PlayArrowIcon />, <EventIcon />, <DetailIcon />, <CheckCircleIcon />],
-			SublistLink: ['start-placement-drive', 'request-date', 'current-placement', 'view-placements'],
-		},
-		{
-			title: 'Notices & Posts',
-			titleIcon: <BusinessIcon />,
-			Sublist: ['View Notices and Posts', 'Create Post/Notice', 'QnA'],
-			SublistIcon: [<LocalPostOfficeIcon />, <PostAddIcon />, <QuestionAnswerIcon />],
-			SublistLink: ['view-notices', 'create-post', 'QnA'],
-		},
-	];
+	//const menuItems = MenuItems;
 
 	return (
 		<div style={{ width: 240 }}>
@@ -101,16 +81,16 @@ function SideBar(props) {
 				{menuItems.map((item) => {
 					return (
 						<Fragment key={`${item.title}-f`}>
-							<ListItem button onClick={(event) => handleClick(event, item.title)} key={item.title}>
+							<ListItem button onClick={() => setOpen(item.title)} key={item.title}>
 								<ListItemIcon>{item.titleIcon}</ListItemIcon>
 								<ListItemText primary={item.title} />
-								{open[item.title] ? <ExpandLess /> : <ExpandMore />}
+								{sidebar[item.title] ? <ExpandLess /> : <ExpandMore />}
 							</ListItem>
 							<Divider />
 							{item.Sublist.map((sublist, index) => {
 								return (
 									<Collapse
-										in={open[item.title]}
+										in={sidebar[item.title]}
 										timeout="auto"
 										unmountOnExit
 										key={`${item.title}-${index}c`}
@@ -138,4 +118,13 @@ function SideBar(props) {
 	);
 }
 
-export default SideBar;
+const mapStateToProps = createStructuredSelector({
+	sidebar: selectSidebar,
+	menuItems: selectMenuItems,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+	setOpen: (selected) => dispatch(setOpen(selected)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SideBar);

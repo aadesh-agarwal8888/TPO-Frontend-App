@@ -6,6 +6,14 @@ import { useTheme, makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import PhaseDetails from '../phase-table/phase-details';
 
+//REDUX
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { selectPhaseTableDetails } from '../../../redux/phase-details/phase-details.selectors';
+import { selectSelectedPhase } from '../../../redux/request-date/request-date.selectors';
+import { setPhase } from '../../../redux/request-date/request-date.actions';
+//REDUX
+
 const useStyles = makeStyles((theme) => ({
 	formControl: {
 		margin: theme.spacing(1),
@@ -17,6 +25,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CustomSelect = (props) => {
+	const { phase_details, selected_phase, set_phase } = props;
+
 	const classes = useStyles();
 
 	const [state, setState] = React.useState({ ...PhaseDetails, selected_description: '' });
@@ -28,16 +38,17 @@ const CustomSelect = (props) => {
 		}
 	}, [state.selected_phase]);
 
-	const handleChange = (event) => {
-		setState({ ...state, selected_phase: event.target.value });
-	};
-
 	return (
 		<div>
 			<FormControl variant="outlined" className={classes.formControl}>
 				<InputLabel>Phase</InputLabel>
-				<Select id="phase-select" value={state.selected_phase} onChange={handleChange} label="Phase">
-					{state.data.map((data, index) => {
+				<Select
+					id="phase-select"
+					value={selected_phase}
+					onChange={(event) => set_phase(event.target.value)}
+					label="Phase"
+				>
+					{phase_details.data.map((data, index) => {
 						return (
 							<MenuItem key={index} value={data.phase_name}>
 								{data.phase_name}
@@ -46,18 +57,17 @@ const CustomSelect = (props) => {
 					})}
 				</Select>
 			</FormControl>
-			<div>
-				<Typography variant="h5">Phase Description:</Typography>
-				<TextField
-					id="phase-description"
-					multiline
-					rows={2}
-					variant="outlined"
-					defaultValue={state.selected_description}
-				/>
-			</div>
 		</div>
 	);
 };
 
-export default CustomSelect;
+const mapStateToProps = createStructuredSelector({
+	phase_details: selectPhaseTableDetails,
+	selected_phase: selectSelectedPhase,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+	set_phase: (phasename) => dispatch(setPhase(phasename)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(CustomSelect);

@@ -3,23 +3,34 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
+//REDUX
+
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { selectPhaseCategory } from '../../../redux/phase-details/phase-details.selectors';
+import { changeDomainCategoryState } from '../../../redux/phase-details/phase-details.actions';
+
+//REDUX
+
 const CheckBoxComponent = (props) => {
-	const { category } = props;
-	const [state, setState] = React.useState(category);
-	const handleChange = (event) => {
-		setState({
-			...state,
-			[event.target.name]: event.target.checked,
-		});
-	};
+	const { domain_category, changeDomainCategoryState } = props;
 
 	return (
 		<div>
 			<FormGroup row>
-				{Object.entries(state).map(([key, value], index) => (
+				{Object.entries(domain_category).map(([key, value], index) => (
 					<FormControlLabel
 						key={index}
-						control={<Checkbox checked={value} onChange={handleChange} name={key} color="primary" />}
+						control={
+							<Checkbox
+								checked={value}
+								onChange={(event) => {
+									changeDomainCategoryState(event.target.name);
+								}}
+								name={key}
+								color="primary"
+							/>
+						}
 						label={key.toUpperCase()}
 					/>
 				))}
@@ -28,4 +39,12 @@ const CheckBoxComponent = (props) => {
 	);
 };
 
-export default CheckBoxComponent;
+const mapStateToProps = createStructuredSelector({
+	domain_category: selectPhaseCategory,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+	changeDomainCategoryState: (domainName) => dispatch(changeDomainCategoryState(domainName)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(CheckBoxComponent);

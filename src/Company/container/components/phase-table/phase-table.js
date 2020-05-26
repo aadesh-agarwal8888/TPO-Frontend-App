@@ -1,7 +1,7 @@
 import React from 'react';
 import MaterialTable from 'material-table';
 
-import PhaseDetails from './phase-details';
+import COLUMNS from './columns';
 
 //REDUX
 
@@ -19,18 +19,17 @@ import {
 const CustomTable = (props) => {
 	const { phaseTableDetails, addPhase, updatePhase, removePhase } = props;
 
-	const [state, setState] = React.useState(phaseTableDetails);
-
 	return (
 		<div>
 			<MaterialTable
 				title="Phase Details"
-				columns={phaseTableDetails.columns}
-				data={phaseTableDetails.data}
+				columns={COLUMNS}
+				data={phaseTableDetails}
 				editable={{
 					onRowAdd: (newData) =>
 						new Promise((resolve) => {
 							setTimeout(() => {
+								resolve();
 								addPhase(newData);
 							}, 600);
 						}),
@@ -45,11 +44,6 @@ const CustomTable = (props) => {
 						new Promise((resolve) => {
 							setTimeout(() => {
 								resolve();
-								/*setState((prevState) => {
-									const data = [...prevState.data];
-									data.splice(data.indexOf(oldData), 1);
-									return { ...prevState, data };
-								});*/
 								removePhase(oldData);
 							}, 600);
 						}),

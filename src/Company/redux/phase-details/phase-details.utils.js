@@ -1,6 +1,6 @@
 export const addPhase = (data, phaseToAdd) => {
-	const { phase_name, phase_description } = phaseToAdd;
-	return [...data, { phase_name, phase_description }];
+	const { title, phase_description } = phaseToAdd;
+	return [...data, { title, phase_description }];
 };
 
 export const updatePhase = (prevState, phase) => {

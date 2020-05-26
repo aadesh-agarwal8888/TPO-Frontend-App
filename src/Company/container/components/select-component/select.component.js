@@ -4,7 +4,6 @@ import { Select, FormControl, MenuItem, InputLabel, TextField } from '@material-
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 
 import Typography from '@material-ui/core/Typography';
-import PhaseDetails from '../phase-table/phase-details';
 
 //REDUX
 import { connect } from 'react-redux';
@@ -29,15 +28,6 @@ const CustomSelect = (props) => {
 
 	const classes = useStyles();
 
-	const [state, setState] = React.useState({ ...PhaseDetails, selected_description: '' });
-
-	React.useEffect(() => {
-		const description = state.data.find((data) => data.phase_name === state.selected_phase);
-		if (description !== undefined) {
-			setState({ ...state, selected_description: description.phase_description });
-		}
-	}, [state.selected_phase]);
-
 	return (
 		<div>
 			<FormControl variant="outlined" className={classes.formControl}>
@@ -48,12 +38,14 @@ const CustomSelect = (props) => {
 					onChange={(event) => set_phase(event.target.value)}
 					label="Phase"
 				>
-					{phase_details.data.map((data, index) => {
-						return (
-							<MenuItem key={index} value={data.phase_name}>
-								{data.phase_name}
-							</MenuItem>
-						);
+					{phase_details.map((data, index) => {
+						if (data.requested_date === '') {
+							return (
+								<MenuItem key={index} value={data.title}>
+									{data.title}
+								</MenuItem>
+							);
+						}
 					})}
 				</Select>
 			</FormControl>

@@ -11,7 +11,3 @@ export const selectPhaseTableDetails = createSelector(
 	[selectPhaseDetails],
 	(phase_details) => phase_details.phase_details
 );
-
-/*export const selectPhaseTableColumns = createSelector(
-
-)*/

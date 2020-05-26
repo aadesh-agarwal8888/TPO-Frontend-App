@@ -11,7 +11,7 @@ const INITIAL_STATE = {
 const requestDateReducers = (state = INITIAL_STATE, action) => {
 	switch (action.type) {
 		case RequestDateTypes.SET_PHASE:
-			const description = PHASEDETAILS.data.find((data) => data.phase_name == action.payload);
+			const description = PHASEDETAILS.find((data) => data.title == action.payload);
 
 			return {
 				...state,

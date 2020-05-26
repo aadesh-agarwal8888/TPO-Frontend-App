@@ -1,11 +1,11 @@
 import CATEGORY from './category';
-import PHASEDETAILS from './phase-details';
+import PHASES from './phase-details';
 import PhaseDetailsTypes from './phase-details.types';
 import { addPhase, updatePhase, removePhase } from './phase-details.utils';
 
 const INITIAL_STATE = {
 	domain_category: CATEGORY,
-	phase_details: PHASEDETAILS,
+	phase_details: PHASES,
 };
 
 const phaseDetailsReducers = (state = INITIAL_STATE, action) => {
@@ -21,26 +21,17 @@ const phaseDetailsReducers = (state = INITIAL_STATE, action) => {
 		case PhaseDetailsTypes.ADD_PHASE_IN_PHASE_TABLE:
 			return {
 				...state,
-				phase_details: {
-					...state.phase_details,
-					data: addPhase(state.phase_details.data, action.payload),
-				},
+				phase_details: addPhase(state.phase_details, action.payload),
 			};
 		case PhaseDetailsTypes.UPDATE_PHASE_IN_PHASE_TABLE:
 			return {
 				...state,
-				phase_details: {
-					...state.phase_details,
-					data: updatePhase(state.phase_details.data, action.payload),
-				},
+				phase_details: updatePhase(state.phase_details, action.payload),
 			};
 		case PhaseDetailsTypes.REMOVE_PHASE_FROM_PHASE_TABLE:
 			return {
 				...state,
-				phase_details: {
-					...state.phase_details,
-					data: removePhase(state.phase_details.data, action.payload),
-				},
+				phase_details: removePhase(state.phase_details, action.payload),
 			};
 		default:
 			return state;

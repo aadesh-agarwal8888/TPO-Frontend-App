@@ -46,7 +46,7 @@ function StartPlacementForm(props) {
 						<Typography variant="h5" style={labelStyle}>
 							Phase Deatils:
 						</Typography>
-						<CustomTable />
+						<CustomTable type="start_placement" />
 					</div>
 					<div style={componentStyle}>
 						<Typography variant="h5" style={labelStyle}>

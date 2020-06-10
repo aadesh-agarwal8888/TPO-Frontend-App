@@ -17,13 +17,13 @@ import {
 //REDUX
 
 const CustomTable = (props) => {
-	const { phaseTableDetails, addPhase, updatePhase, removePhase } = props;
+	const { phaseTableDetails, addPhase, updatePhase, removePhase, type } = props;
 
 	return (
 		<div>
 			<MaterialTable
 				title="Phase Details"
-				columns={COLUMNS}
+				columns={COLUMNS[type]}
 				data={phaseTableDetails}
 				editable={{
 					onRowAdd: (newData) =>

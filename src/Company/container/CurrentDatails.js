@@ -3,6 +3,8 @@ import Typography from '@material-ui/core/Typography';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 import { Paper } from '@material-ui/core';
 
+import PhaseWiseDetails from './components/phase-wise-details/phase-wise-details.component';
+
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -27,6 +29,7 @@ function CurrentDetails(props) {
 		<React.Fragment>
 			<Paper>
 				<Typography variant="h3">CurrentDetails</Typography>
+				<PhaseWiseDetails />
 			</Paper>
 		</React.Fragment>
 	);
